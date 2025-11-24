@@ -1,0 +1,27 @@
+{
+  "name": "life",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "format": "prettier --write \"./src/**/*.{ts,tsx,json,css,md}\"",
+    "lint": "eslint \"./src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"./src/**/*.{ts,tsx}\" --fix"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.34.0",
+    "@webgpu/types": "^0.1.66",
+    "eslint": "^9.34.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.40.0",
+    "vite": "npm:rolldown-vite@7.1.14"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.1.14"
+  }
+}

@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json", 
+    "include": [
+      "eslint.config.js" 
+    ],
+    "compilerOptions": {
+      "module": "NodeNext", 
+      "allowJs": true,     
+      "checkJs": false,  
+      "noEmit": true,      
+      "isolatedModules": false, 
+      "lib": ["es2022"]  
+    }
+  }

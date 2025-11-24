@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPU Life</title>
+    <link rel="stylesheet" href="/src/style.css">
+  </head>
+  <body>
+    <div id="controls">
+      <h2 id="fps">FPS: </h2>
+      <input type="text" placeholder="Particle Amount" id="particle-amount">
+      <button id="newSimBtn">New Sim</button>
+      <h2>Controls</h2>
+      <p>
+        Left mouse down - attract particles <br>
+        Right mouse down - detract particles
+      </p>
+    </div>
+    <canvas id="canvas"></canvas>
+    <a id="githubBtn" href="https://github.com/SilverSpace505/gpu-life" target="_blank"></a>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
