@@ -194,6 +194,7 @@ export function resolveTimestamp(
 }
 
 export async function readTimestamp(name: string) {
+  if (!canTimestamp) return 0;
   if (!canTimestamp || timestamps[name].resultBuffer.mapState != 'unmapped')
     return timestamps[name].v;
 
@@ -207,4 +208,20 @@ export async function readTimestamp(name: string) {
   timestamps[name].resultBuffer.unmap();
 
   return timestamps[name].v;
+}
+
+export function lerpn(
+  start: number,
+  end: number,
+  multiply: number,
+  step: number,
+) {
+  multiply = 1 - (1 - multiply) ** step;
+  if (multiply > 1) multiply = 1;
+  if (multiply < 0) multiply = 0;
+  return start + (end - start) * multiply;
+}
+
+export function lerp5(start: number, end: number, step: number) {
+  return lerpn(start, end, 0.5, step);
 }

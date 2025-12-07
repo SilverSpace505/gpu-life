@@ -4,10 +4,11 @@ const canvas = document.getElementById('canvas') as HTMLCanvasElement;
 
 const timesDisplay = document.getElementById('times') as HTMLHeadingElement;
 
-import { mouse } from './input';
+import { tcamera, mouse } from './input';
 import renderShaders from './render.wgsl?raw';
 import {
   hslToRgb,
+  lerp5,
   linkRenderTimestamp,
   readTimestamp,
   requestTimestamps,
@@ -23,7 +24,7 @@ const simData = new Float32Array(simSize);
 
 const dt = 0.02;
 const rMax = 0.4 / 4;
-const forceFactor = 1 * 4 * 2;
+const forceFactor = 1 * 4;
 const beta = 0.2;
 const frictionHalfLife = 0.04;
 
@@ -59,7 +60,7 @@ function makeRandomMatrix() {
   return rows;
 }
 
-const colourAmt = 50;
+const colourAmt = 100;
 const colours: [number, number, number][] = [];
 for (let i = 0; i < colourAmt; i++) {
   colours.push(hslToRgb((i / colourAmt) * 360, 1, 0.5));
@@ -72,6 +73,9 @@ const multistep = 1;
 
 const cellAmt = 2000;
 
+const camera = { ...tcamera };
+const cameraData = new Float32Array([camera.x, camera.y, camera.zoom]);
+
 let particleAmt = 10000;
 
 let device: GPUDevice | undefined;
@@ -79,6 +83,7 @@ let context: GPUCanvasContext | undefined;
 let uniformBuffer: GPUBuffer | undefined;
 let simBuffer: GPUBuffer | undefined;
 let renderPipeline: GPURenderPipeline | undefined;
+let cameraBuffer: GPUBuffer | undefined;
 
 let matrixBuffer: GPUBuffer | undefined;
 let colourBuffer: GPUBuffer | undefined;
@@ -146,6 +151,12 @@ let engine: string = 'countingSort';
     size: simSize * 4,
     usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     label: 'simBuffer',
+  });
+
+  cameraBuffer = device.createBuffer({
+    size: 4 * 4,
+    usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+    label: 'cameraBuffer',
   });
 
   //
@@ -227,7 +238,14 @@ function render(context: GPUCanvasContext, commandEncoder: GPUCommandEncoder) {
 }
 
 function startParticles() {
-  if (!device || !uniformBuffer || !renderPipeline || !simBuffer) return;
+  if (
+    !device ||
+    !uniformBuffer ||
+    !renderPipeline ||
+    !simBuffer ||
+    !cameraBuffer
+  )
+    return;
 
   const bufferSize = particleAmt * particleStride;
   particleBuffers = [
@@ -343,6 +361,12 @@ function startParticles() {
       {
         binding: 1,
         resource: {
+          buffer: cameraBuffer,
+        },
+      },
+      {
+        binding: 2,
+        resource: {
           buffer: colourBuffer,
         },
       },
@@ -350,11 +374,19 @@ function startParticles() {
   });
 }
 
+let lastTime = 0;
+
 function update() {
   requestAnimationFrame(update);
   if (!device || !context) return;
 
   const start = performance.now();
+  const delta = (start - lastTime) / 1000;
+  lastTime = start;
+
+  camera.x = lerp5(camera.x, tcamera.x, delta * 50);
+  camera.y = lerp5(camera.y, tcamera.y, delta * 50);
+  camera.zoom = lerp5(camera.zoom, tcamera.zoom, delta * 50);
 
   const commandEncoder = device.createCommandEncoder();
 
@@ -371,6 +403,14 @@ function update() {
     uniformData[7] = mouse.type;
 
     device.queue.writeBuffer(uniformBuffer, 0, uniformData);
+  }
+
+  if (cameraBuffer) {
+    cameraData[0] = camera.x;
+    cameraData[1] = camera.y;
+    cameraData[2] = camera.zoom;
+
+    device.queue.writeBuffer(cameraBuffer, 0, cameraData);
   }
 
   for (let i = 0; i < multistep; i++) {

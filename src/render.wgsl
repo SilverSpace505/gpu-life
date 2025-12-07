@@ -4,6 +4,11 @@ struct Uniforms {
     mouse: vec4<f32>
 }
 
+struct Camera {
+    pos: vec2f,
+    zoom: f32
+}
+
 struct Particle {
     @location(0) pos: vec2f,
     @location(1) vel: vec2f,
@@ -16,6 +21,7 @@ struct VertexOutput {
 }
 
 @group(0) @binding(0) var<uniform> uniforms: Uniforms;
+@group(0) @binding(1) var<uniform> camera: Camera;
 
 @vertex
 fn vertex(
@@ -33,12 +39,12 @@ fn vertex(
     let worldPos = particle.pos + offset;
 
     var output: VertexOutput;
-    output.pos = vec4f(worldPos.x / a, worldPos.y, 0.0, 1.0);
+    output.pos = vec4f((worldPos.x - camera.pos.x) * camera.zoom / a, (worldPos.y - camera.pos.y) * camera.zoom, 0.0, 1.0);
     output.colour = particle.colour;
     return output;
 }
 
-@group(0) @binding(1) var<storage, read> colours: array<f32>;
+@group(0) @binding(2) var<storage, read> colours: array<f32>;
 
 @fragment
 fn fragment(@location(0) colour: f32) -> @location(0) vec4f {
