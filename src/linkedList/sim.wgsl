@@ -116,18 +116,6 @@ fn getCellForce(pi: u32, cell: u32) -> Force {
         let rx = ip.pos.x - p.pos.x;
         let ry = ip.pos.y - p.pos.y;
 
-        // if (rx > uniforms.aspect) {
-        //     rx -= 2 * uniforms.aspect;
-        // } else if (rx < -uniforms.aspect) {
-        //     rx += 2 * uniforms.aspect;
-        // }
-
-        // if (ry > 1) {
-        //     ry -= 2;
-        // } else if (ry < -1) {
-        //     ry += 2;
-        // }
-
         let rs = rx * rx + ry * ry;
         if (rs > 0 && rs < mrs) {
             let r = sqrt(rs);
@@ -139,6 +127,8 @@ fn getCellForce(pi: u32, cell: u32) -> Force {
             avoidForceY += ry / r * f.y;
 
             div += pow(max(0, -f.y), 1) / 10 * sim.avoidance;
+        } else if (rs == 0) {
+            avoidForceX += (f32(pi)*20293.302 % 4932.329) / 100000;
         }
 
         numParticles++;
@@ -188,7 +178,6 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     let mx = uniforms.mouse.x;
 
     let force = getForce(global_id.x);
-    // let force = vec2f(10000, 0);
 
     p.vel.x *= sim.friction;
     p.vel.y *= sim.friction;

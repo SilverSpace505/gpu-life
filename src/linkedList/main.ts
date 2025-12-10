@@ -211,7 +211,7 @@ export function tick(
   );
   constructPassEncoder.end();
 
-  resolveTimestamp(device, commandEncoder, 'construct');
+  resolveTimestamp(commandEncoder, 'construct');
 
   const simPassEncoder = commandEncoder.beginComputePass(
     linkComputeTimestamp(device, 'sim'),
@@ -221,7 +221,7 @@ export function tick(
   simPassEncoder.dispatchWorkgroups(Math.ceil(particleAmt / workgroupSize));
   simPassEncoder.end();
 
-  resolveTimestamp(device, commandEncoder, 'sim');
+  resolveTimestamp(commandEncoder, 'sim');
 }
 
 export function updateDisplays(params: Record<string, number>) {

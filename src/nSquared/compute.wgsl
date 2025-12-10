@@ -65,18 +65,6 @@ fn getForce(pi: u32) -> vec2f {
         let rx = ip.pos.x - p.pos.x;
         let ry = ip.pos.y - p.pos.y;
 
-        // if (rx > uniforms.aspect) {
-        //     rx -= 2 * uniforms.aspect;
-        // } else if (rx < -uniforms.aspect) {
-        //     rx += 2 * uniforms.aspect;
-        // }
-
-        // if (ry > 1) {
-        //     ry -= 2;
-        // } else if (ry < -1) {
-        //     ry += 2;
-        // }
-
         let rs = rx * rx + ry * ry;
         if (rs > 0 && rs < mrs) {
             let r = sqrt(rs);
@@ -88,6 +76,8 @@ fn getForce(pi: u32) -> vec2f {
             avoidForceY += ry / r * f.y;
 
             div += pow(max(0, -f.y), 1) / 10 * sim.avoidance;
+        } else if (rs == 0) {
+            avoidForceX += (f32(pi)*20293.302 % 4932.329) / 100000;
         }
     }
 

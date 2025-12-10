@@ -3,7 +3,6 @@ export function hslToRgb(
   s: number,
   l: number,
 ): [number, number, number] {
-  // Ensure h is in [0, 360), s and l are in [0, 1]
   h = ((h % 360) + 360) % 360;
   s = Math.max(0, Math.min(1, s));
   l = Math.max(0, Math.min(1, l));
@@ -190,19 +189,9 @@ export function linkRenderTimestamp(
 }
 
 export function resolveTimestamp(
-  device: GPUDevice,
   commandEncoder: GPUCommandEncoder,
   name: string,
 ) {
-  void device;
-  // device.popErrorScope().then((error) => {
-  //   if (error) {
-  //     console.log(
-  //       `Validation error during Pass execution for ${name}:`,
-  //       error.message,
-  //     );
-  //   }
-  // });
   if (!canTimestamp) return;
   commandEncoder.resolveQuerySet(
     timestamps[name].querySet,

@@ -93,7 +93,7 @@ export function tick(
   passEncoder.dispatchWorkgroups(Math.ceil(particleAmt / workgroupSize));
   passEncoder.end();
 
-  resolveTimestamp(device, commandEncoder, 'compute');
+  resolveTimestamp(commandEncoder, 'compute');
 }
 
 export function updateDisplays(params: Record<string, number>) {

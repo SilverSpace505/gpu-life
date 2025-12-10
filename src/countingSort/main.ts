@@ -305,7 +305,7 @@ export function tick(
   cellPassEncoder.setBindGroup(0, cellBindGroups[alternate]);
   cellPassEncoder.dispatchWorkgroups(Math.ceil(particleAmt / workgroupSize));
   cellPassEncoder.end();
-  resolveTimestamp(device, commandEncoder, 'cell');
+  resolveTimestamp(commandEncoder, 'cell');
 
   //
 
@@ -316,7 +316,7 @@ export function tick(
   prefixPassEncoder.setBindGroup(0, prefixBindGroup);
   prefixPassEncoder.dispatchWorkgroups(1);
   prefixPassEncoder.end();
-  resolveTimestamp(device, commandEncoder, 'prefix');
+  resolveTimestamp(commandEncoder, 'prefix');
 
   //
 
@@ -327,7 +327,7 @@ export function tick(
   sortPassEncoder.setBindGroup(0, sortBindGroup);
   sortPassEncoder.dispatchWorkgroups(Math.ceil(particleAmt / workgroupSize));
   sortPassEncoder.end();
-  resolveTimestamp(device, commandEncoder, 'sort');
+  resolveTimestamp(commandEncoder, 'sort');
 
   //
 
@@ -339,7 +339,7 @@ export function tick(
   simPassEncoder.dispatchWorkgroups(Math.ceil(particleAmt / workgroupSize));
   simPassEncoder.end();
 
-  resolveTimestamp(device, commandEncoder, 'countSim');
+  resolveTimestamp(commandEncoder, 'countSim');
 }
 
 export function updateDisplays(params: Record<string, number>) {

@@ -25,7 +25,6 @@ window.addEventListener('mousedown', (event) => {
   mouse.y += tcamera.y;
   if (event.button == 0) mouse.down = keys.ShiftLeft ? 2 : 1;
   if (event.button == 2) pan = true;
-  // if (event.button == 2) mouse.down = 2;
 });
 
 window.addEventListener('mouseup', (event) => {
@@ -69,10 +68,6 @@ window.addEventListener('keydown', (event) => {
     if (type < 4) mouse.type = type;
   }
 });
-
-// window.addEventListener('touchstart', (event) => {
-
-// })
 
 export const tcamera = { x: 0, y: 0, zoom: 1 };
 

@@ -104,18 +104,6 @@ fn getCellForce(pi: u32, p: Particle, cell: u32) -> Force {
         let rx = ip.pos.x - p.pos.x;
         let ry = ip.pos.y - p.pos.y;
 
-        // if (rx > uniforms.aspect) {
-        //     rx -= 2 * uniforms.aspect;
-        // } else if (rx < -uniforms.aspect) {
-        //     rx += 2 * uniforms.aspect;
-        // }
-
-        // if (ry > 1) {
-        //     ry -= 2;
-        // } else if (ry < -1) {
-        //     ry += 2;
-        // }
-
         let rs = rx * rx + ry * ry;
         if (rs > 0 && rs < mrs) {
             let r = sqrt(rs);
@@ -127,6 +115,8 @@ fn getCellForce(pi: u32, p: Particle, cell: u32) -> Force {
             avoidForceY += ry / r * f.y;
 
             div += max(0, -f.y) / 10 * sim.avoidance;
+        } else if (rs == 0) {
+            avoidForceX += (f32(pi)*20293.302 % 4932.329) / 100000;
         }
     }
 
@@ -151,65 +141,11 @@ fn getForce(pi: u32) -> vec2f {
 
     for (var cx = cxmin; cx <= cxmax; cx++) {
         for (var cy = cymin; cy <= cymax; cy++) {
-            // var ccx = f32(cx);
-            // var ccy = f32(cy);
-
-            // if (cx == cxmax && (ccx + 1) * sim.cellSize > uniforms.aspect) {
-            //     if (ccx * sim.cellSize <= uniforms.aspect) {
-            //         let c = hash3i(vec3i(cx, cy, 0)) % u32(sim.cellAmt);
-            //         let force = getCellForce(pi, p, c);
-            //         totalForce += force.total;
-            //         avoidForce += force.avoid;
-            //         div += force.div;
-            //     }
-            //     ccx -= 2 * uniforms.aspect / sim.cellSize;
-            //     ccx = floor(ccx);
-            // }
-            // if (cx == cxmin && ccx * sim.cellSize < -uniforms.aspect) {
-            //     if ((ccx + 1) * sim.cellSize >= -uniforms.aspect) {
-            //         let c = hash3i(vec3i(cx, cy, 0)) % u32(sim.cellAmt);
-            //         let force = getCellForce(pi, p, c);
-            //         totalForce += force.total;
-            //         avoidForce += force.avoid;
-            //         div += force.div;
-            //     }
-            //     ccx += 2 * uniforms.aspect / sim.cellSize;
-            //     ccx = ceil(ccx);
-            // }
-
-            // if (f32(ccx) * sim.cellSize > uniforms.aspect) {
-            //     ccx -= 2 * uniforms.aspect / sim.cellSize;
-            // } else if (f32(ccx) * sim.cellSize < -uniforms.aspect) {
-            //     ccx += 2 * uniforms.aspect / sim.cellSize;
-            // }
-            // if (f32(ccy) * sim.cellSize > 1) {
-            //     ccy -= 2 / sim.cellSize;
-            // } else if (f32(ccy) * sim.cellSize < -1) {
-            //     ccy += 2 / sim.cellSize;
-            // }
-
             let c = hash3i(vec3i(cx, cy, 0)) % u32(sim.cellAmt);
             let force = getCellForce(pi, p, c);
             totalForce += force.total;
             avoidForce += force.avoid;
             div += force.div;
-
-            // if (ncx != cx) {
-            //     let c = hash3i(vec3i(ncx, cy, 0)) % u32(sim.cellAmt);
-            //     let force = getCellForce(pi, p, c);
-            //     totalForce += force.total;
-            //     avoidForce += force.avoid;
-            //     div += force.div;
-            // }
-            
-
-            // if (i32(ccx) != cx || i32(ccy) != cy) {
-            //     let c = hash3i(vec3i(i32(round(ccx)), i32(round(ccy)), 0)) % u32(sim.cellAmt);
-            //     let force = getCellForce(pi, p, c);
-            //     totalForce += force.total;
-            //     avoidForce += force.avoid;
-            //     div += force.div;
-            // }
         }
     }
 
@@ -227,7 +163,6 @@ fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     let mx = uniforms.mouse.x;
 
     let force = getForce(global_id.x);
-    // let force = vec2f(10000, 0);
 
     p.vel.x *= sim.friction;
     p.vel.y *= sim.friction;
