@@ -1,7 +1,7 @@
 
 ![banner](<screenshots/banner.png>)
 
-# <center>GPU Life</center>
+<h1 align="center">GPU Life</h1>
 A little simulation of particle life made using webgpu and typescript.
 
 The algortihm for the particle movement is entirely based of particle life. It's just been moved onto a compute shader to allow for larger numbers of particles.
